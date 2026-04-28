@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I.S.K.O.L.A.R</title>
+    <link rel="stylesheet" href="application.css">
+</head>
+
+<body class="bg-login">
+
+<header class="header">
+    <nav class="navbar">
+
+        <div class="name">
+            <div class="logo">
+                <img src="!ISKOLAR.png" alt="ISKOLAR Logo">
+            </div>
+
+            <div class="namePos">
+                <p style="letter-spacing: 10px;"> ISKOLAR</p>
+                <h3>Interactive System for Knowledge-Oriented <br> Learning, Assistance, and Review</h3>
+            </div>
+        </div>
+
+        <nav class="nav">
+            <a href="index.html">HOME</a>
+            <a href="sbjctGuestmain.html">SUBJECTS</a>
+            <a href="application.html">SIGN IN</a>
+        </nav>
+
+        <div class="search-wrapper">
+            <input type="search" placeholder="Search…" id="searchbar">
+        </div>
+
+    </nav>
+</header>
+
+<section class="signin-section">
+
+    <div class="signin-left">
+        <h1>SIGN IN</h1>
+        <p>
+            Log in with your account to access modules, quizzes, and mock tests.  
+            For educators, once logged in you may upload and check the progress of the students.
+        </p>
+    </div>
+
+    <div class="signin-box">
+
+        <div class="tabs">
+            <button class="tab active" data-type="student">STUDENT</button>
+            <button class="tab" data-type="teacher">TEACHER</button>
+        </div>
+
+        <form id="signinForm">
+
+            <input type="text" id="name" placeholder="FULL NAME" required>
+            <input type="text" id="school" placeholder="SCHOOL" required>
+            <input type="email" id="email" placeholder="EMAIL" required>
+            <input type="text" id="idnum" placeholder="ID NUMBER" required>
+
+            <button type="submit" class="signin-btn">SIGN IN</button>
+
+        </form>
+
+    </div>
+
+</section>
+
+<footer>
+    <p style="margin-top: 50px;">&copy; 2025 I.S.K.O.L.A.R. All rights reserved. <br>Need help? Email us at bsiteducationmanagementsystem@gmail.com</p>
+</footer>
+
+
+  
+<script>
+    const searchbar = document.getElementById('searchbar');
+const easteregg = document.getElementById('EASTEREGG');
+const pics = document.getElementById('PICS');
+
+searchbar.addEventListener("keydown", function(event){
+        
+        if (event.key === "Enter"){
+            if (
+            searchbar.value === "home" ||
+            searchbar.value === "Home" ||
+            searchbar.value === "Main" ||
+            searchbar.value === "main" ||
+            searchbar.value === "Index" ||
+            searchbar.value === "index"
+            ) {
+            window.location.href = "index.html";
+            }
+
+            if (
+            searchbar.value === "application" ||
+            searchbar.value === "sign-in" ||
+            searchbar.value === "student" ||
+            searchbar.value === "teacher" ||
+            searchbar.value === "users"
+            ) {
+            window.location.href = "application.html";
+            }
+
+            if (
+            searchbar.value === "subjects" ||
+            searchbar.value === "subject" ||
+            searchbar.value === "courses" ||
+            searchbar.value === "guest"
+            ) {
+            window.location.href = "sbjctGuestmain.html";
+            }
+
+            if (
+            searchbar.value === "science"
+            ) {
+            window.location.href = "sbjctGuest.html";
+            }
+
+            if (
+            searchbar.value === "math"
+            ) {
+            window.location.href = "sbjctGuestMath.html";
+            }
+
+            if (
+            searchbar.value === "english"
+            ) {
+            window.location.href = "sbjctGuestEng.html";
+            }
+
+            if (
+            searchbar.value === "reading"
+            ) {
+            window.location.href = "sbjctGuestRead.html";
+            }
+
+            if (
+            searchbar.value === "abstract"
+            ) {
+            window.location.href = "sbjctGuestAbs.html";
+            }
+
+  }})
+
+    const tabs = document.querySelectorAll('.tab');
+    let accountType = 'student'; // default tab
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            accountType = tab.getAttribute('data-type'); // set accountType
+        });
+    });
+
+    // Sign-in logic
+    const teachers = [
+        { name: "T1", school: "SHS", email: "teacher@test.com", id: "T001" }
+    ];
+
+    const students = [
+        { name: "S1", school: "SHS", email: "student@test.com", id: "S001" }
+    ];
+
+    document.getElementById("signinForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value.trim();
+        const school = document.getElementById("school").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const idnum = document.getElementById("idnum").value.trim();
+
+        let valid = false;
+
+        if (accountType === "teacher") {
+            valid = teachers.some(t =>
+                t.name === name &&
+                t.school === school &&
+                t.email === email &&
+                t.id === idnum
+            );
+            if (valid) window.location.href = "subjectsmain.html"; // redirect teacher
+        }
+
+        if (accountType === "student") {
+            valid = students.some(s =>
+                s.name === name &&
+                s.school === school &&
+                s.email === email &&
+                s.id === idnum
+            );
+            if (valid) window.location.href = "sbjctStudmain.html"; // redirect student
+        }
+
+        if (!valid) {
+            alert("Incorrect information. Please try again.");
+        }
+    });
+</script>
+</body>
+</html>
