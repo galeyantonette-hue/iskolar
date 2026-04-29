@@ -234,8 +234,12 @@ function removeFile(subject, index) {
 
     if (role !== "teacher") return;
 
-    else files[subject].splice(index, 1);
-    updateFileList();
+    const confirmDelete = confirm("Are you sure you want to remove this file?");
+
+    if (confirmDelete) {
+        files[subject].splice(index, 1);
+        updateFileList();
+    }
 }
 
 // Upload PDF
@@ -266,3 +270,164 @@ subjectSelect.addEventListener("change", updateFileList);
 
 // Initial Load
 updateFileList();
+
+// Quiz chuchu
+
+const quizBtn = document.getElementById("quizBtn");
+const quizModal = document.getElementById("quizModal");
+const quizForm = document.getElementById("quizForm");
+const quizResult = document.getElementById("quizResult");
+
+// quiz subject
+const quizzes = {
+    abstract: {
+        questions: [
+        {
+            q: "Select a suitable option that would complete the figure matrix.",
+            image: "abstract_qstn1.png",
+            options: ["A", "B", "C", "D"],
+            answer: "D"
+        },
+        {
+            q: "Which figure is the odd one out?",
+            image: "abstract_qstn2.png",
+            options: ["A", "B", "C", "D"],
+            answer: "C"
+        },
+        {
+            q: "Which figure belongs in neither group?",
+            image: "abstract_qstn3.png",
+            options: ["A", "B", "C", "D"],
+            answer: "C"
+        },
+        {
+            q: "Which figure is next in the series?",
+            image: "abstract_qstn4.png",
+            options: ["A", "B", "C", "D"],
+            answer: "B"
+        },
+        {
+            q: "Choose the image that completes the pattern (From left to right).",
+            image: "abstract_qstn5.png",
+            options: ["A", "B", "C", "D"],
+            answer: "D"
+        }
+    ]
+    },
+    mathematics: {
+        questions: [
+        {
+            q: "Decreasing a number by 40% and then decreasing the result by 30% is the same as decreasing the original number by what percent?",
+            options: ["A. 70", "B. 58", "C. 42", "D. 35"],
+            answer: "B"
+        },
+        {
+            q: "Simplify and write using positive exponents: (-3x<sup>-2</sup>)(-3x)<sup>2</sup> ÷ 3 - x<sup>0</sup>",
+            options: ["A. -10", "B. 13.5", "C. -9x", "D. -2x<sup>-4</sup>"],
+            answer: "A"
+        }
+        ]
+    },
+    science: {
+        questions: [
+            {
+            q: "la pa hehe",
+            options: ["A", "B", "C", "D"],
+            answer: "A"
+        }
+        ]
+    },
+    english: {
+        questions: [
+            {
+            q: "la pa hehe",
+            options: ["A", "B", "C", "D"],
+            answer: "A"
+        }
+        ]
+    },
+    reading: {
+        questions: [
+            {
+            q: "la pa hehe",
+            options: ["A", "B", "C", "D"],
+            answer: "A"
+        }
+        ]
+    }
+};
+
+// open quiz
+quizBtn.addEventListener("click", () => {
+    quizModal.style.display = "block";
+    loadQuiz();
+});
+
+function loadQuiz() {
+    const subject = subjectSelect.value;
+    const quiz = quizzes[subject];
+
+    let html = "";
+
+    quiz.questions.forEach((item, index) => {
+        html += `<div style="margin-bottom:15px;">`;
+
+        html += `<p>${index + 1}. ${item.q}</p>`;
+
+        // image kemerlu
+        if (item.image) {
+            html += `<img src="${item.image}" style="max-width:100%; margin:10px 0;">`;
+        }
+
+    item.options.forEach(opt => {
+        html += `
+            <label style="
+                display:block;
+                padding:8px;
+                margin:6px 0;
+                border:1px solid #ccc;
+                border-radius:6px;
+                cursor:pointer;
+            ">
+                <input type="radio" name="q${index}" value="${opt}" style="margin-right:8px;">
+                ${opt}
+            </label>
+        `;
+    });
+
+        html += `</div>`;
+    });
+
+    html += `<br>
+        <button type="submit">Submit Quiz</button>
+        <button type="button" onclick="document.getElementById('quizModal').style.display='none'">Close</button>`;
+
+    quizForm.innerHTML = html;
+}
+
+// submission
+quizForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const subject = subjectSelect.value;
+    const quiz = quizzes[subject];
+
+    let score = 0;
+    let output = "";
+
+    quiz.questions.forEach((item, index) => {
+        const userAnswer = quizForm[`q${index}`].value;
+
+        if (userAnswer === item.answer) {
+            score++;
+            output += `<p>Q${index + 1}: ✔ Correct</p>`;
+        } else {
+            output += `<p>Q${index + 1}: ❌ Wrong (Correct: ${item.answer})</p>`;
+        }
+    });
+
+    quizResult.innerHTML = `
+        <h3>Score: ${score} / ${quiz.questions.length}</h3>
+        ${output}
+    `;
+});
