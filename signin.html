@@ -49,7 +49,6 @@
 
         <form id="loginForm">
 
-            <!-- optional for visual consistency -->
             <input type="text" id="name" placeholder="FULL NAME">
 
             <input type="email" id="email" placeholder="EMAIL" required>
@@ -75,7 +74,7 @@
 </section>
 
 <footer>
-    <p style="margin-top: 50px;">
+    <p>
         &copy; 2025 I.S.K.O.L.A.R. All rights reserved. <br>
         Need help? Email us at bsiteducationmanagementsystem@gmail.com
     </p>
@@ -83,7 +82,16 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { 
+    getAuth, 
+    signInWithEmailAndPassword 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+import {
+    getFirestore,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDeXxlaxk1nCVQ9k8tMiEs9o-EcLrkTSPE",
@@ -94,10 +102,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-// ==========================
-// PASSWORD TOGGLE FIX
-// ==========================
+// PASSWORD TOGGLE
 const passwordInput = document.getElementById("password");
 const togglePassword = document.getElementById("togglePassword");
 
@@ -111,9 +118,6 @@ togglePassword.addEventListener("click", () => {
     }
 });
 
-// ==========================
-// LOGIN LOGIC
-// ==========================
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -122,13 +126,27 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     const formMessage = document.getElementById("formMessage");
 
     try {
-        await signInWithEmailAndPassword(auth, email, password);
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
 
         formMessage.style.color = "green";
         formMessage.textContent = "Login successful! Redirecting...";
 
         setTimeout(() => {
-            window.location.href = "signinUI.html";
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+
+                if (data.accountType === "teacher") {
+                    window.location.href = "teachersign-in.html";
+                } else {
+                    window.location.href = "studentsign-in.html";
+                }
+            } else {
+                window.location.href = "index.html";
+            }
         }, 1500);
 
     } catch (error) {
